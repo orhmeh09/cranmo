@@ -8,7 +8,7 @@
   "author": "Altan Orhon",
   "homepage_url" : "https://github.com/orhmeh09/cranmo",
   "icons": {
-    "64": "cranmo64.png"
+    "128": "cranmo128.png"
   },
   "content_scripts": [
     {
