@@ -15,7 +15,6 @@
   "content_scripts": [
     {
       "matches": [ "*://*.r-project.org/*", "*://*.rstudio.com/*", "*://*.r-bloggers.com/*", "*://*.r-pkg.org/*"],
-      //"matches": [ "<all_urls>"],
       "js": ["jquery-3.2.1.min.js", "jquery.hoverintent.js", "content.js"]
     }
   ]
