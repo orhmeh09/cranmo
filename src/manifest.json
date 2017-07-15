@@ -1,11 +1,9 @@
 {
-"update_url": "https://clients2.google.com/service/update2/crx",
-
   "manifest_version": 2,
   "name": "cranmo - R CRAN Package Description Mouseover",
   "short_name": "cranmo",
   "description": "Fetches and displays descriptions of CRAN package links on mouseover",
-  "version": "0.01",
+  "version": "1.0",
 
   "author": "Altan Orhon",
   "homepage_url" : "https://github.com/orhmeh09/cranmo",
