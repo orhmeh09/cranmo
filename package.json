@@ -1,0 +1,36 @@
+{
+  "name": "cranmo",
+  "version": "1.0.0",
+  "description": "cranmo",
+  "main": "src/content.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "echo_name": "cross-var echo $npm_package_name",
+    "prebuild": "rm build/*.zip",
+    "build": "cross-var zip -r -X build/$npm_package_name-$npm_package_version.zip . -i ./src/*",
+    "clean": "rm build/*.zip"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orhmeh09/cranmo.git"
+  },
+  "author": "Altan Orhon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/orhmeh09/cranmo/issues"
+  },
+  "homepage": "https://github.com/orhmeh09/cranmo#readme",
+  "devDependencies": {
+    "cross-env": "^3.2.4",
+    "eslint": "^4.4.1",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-dollar-sign": "^1.0.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jquery": "^1.2.1",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0"
+  },
+  "dependencies": {
+    "gitignore": "^0.6.0"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "extends": "airbnb-base",
+  "root": true,
+  "plugins" : [
+    "jquery",
+    "dollar-sign"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "script"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "jquery" : true
+  },
+  "rules": {
+    "no-use-before-define": [ 2, { "functions": false } ],
+    "prefer-const": 1,
+    "no-unused-vars" : 1,
+    "max-len": ["warn", 120],
+    "comma-dangle": 0
+  }
+}
