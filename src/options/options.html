@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Test Extension Options</title>
+  <style>
+    body: { padding: 10px; }
+  </style>
+</head>
+
+<body>
+
+  <label>
+    <input type="checkbox" id="showDate">
+    Show when the queried package was last updated?
+  </label>
+  <br>
+  <label>
+    <input type="checkbox" id="showDownloadCounts">
+    Show how many times the package was downloaded?
+  </label>
+  <br>
+  <label>
+    Hover interval (milliseconds):
+    <input type="number" min="1" id="hoverInterval">
+  </label>
+
+  <div id="status"></div>
+  <button id="save">Save</button>
+
+  <script src="options.js"></script>
+</body>
+</html>

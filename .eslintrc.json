@@ -13,13 +13,19 @@
     "browser": true,
     "node": true,
     "es6": true,
-    "jquery" : true
+    "jquery" : true,
+    "webextensions" : true
   },
   "rules": {
     "no-use-before-define": [ 2, { "functions": false } ],
+    "quote-props": 0,
     "prefer-const": 1,
     "no-unused-vars" : 1,
-    "max-len": ["warn", 120],
-    "comma-dangle": 0
+    "max-len": ["warn", 160],
+    "comma-dangle": 0,
+    "spaced-comment": 0,
+    "strict": 0,
+    "no-console":0,
+    "indent": 1
   }
 }

@@ -10,10 +10,12 @@
   "icons": {
     "128": "cranmo128.png"
   },
+  "options_page": "options/options.html",
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": [ "*://*.r-project.org/*", "*://*.rstudio.com/*", "*://*.r-bloggers.com/*", "*://*.r-pkg.org/*"],
-      "js": ["jquery-3.2.1.min.js", "jquery.hoverintent.js", "content.js"]
+      "js": ["lib/jquery-3.2.1.min.js", "lib/jquery.hoverintent.js", "lib/CRANMirrors.js", "content.js"]
     }
   ]
 }

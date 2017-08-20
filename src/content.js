@@ -1,19 +1,54 @@
-'use strict';
 
-const cranmoOptions = {
-  maxRequests: 10,
-  showDate: true,
-  showDownloadCounts: true,
-  urlForCRAN: 'https://cran.r-project.org/web/packages/',
-  urlForDownloadCounts: 'https://cranlogs.r-pkg.org/downloads/total/2000-01-01:2100-01-01/'
+// import CRANMirrors from 'CRAN_mirrors';
+/* global CRANMirrors */
+
+function getCRANPackagesURL(key = '0-Cloud [https]') {
+  const baseURL = CRANMirrors[key] || CRANMirrors['0-Cloud [https]'];
+  return (`${baseURL}/web/packages/`);
+}
+
+// function loadStoredOptions() {
+//   console.log('Loading stored options...');
+//   let result = {};
+//   const gettingItem = chrome.storage.sync.get(null, (items) => {
+//     result = Object.assign(result, items);
+//   });
+//   return result;
+// }
+
+
+
+let cranmoOptions = {
+  // urlForCRAN: 'https://cran.r-project.org/web/packages/',
+  urlForCRAN: getCRANPackagesURL(),
+  urlForDownloadCounts: 'https://cranlogs.r-pkg.org/downloads/total/2000-01-01:2100-01-01/',
+  downloadCountsInterval: {
+    start: new Date(2000, 1, 1),
+    end: new Date(2100, 1, 1)
+  },
 };
+
+function restoreCranmoOptions(ev) {
+  console.log('Restoring Cranmo options');
+  chrome.storage.sync.get({
+    showDate: true,
+    showDownloadCounts: true,
+    hoverInterval: 200
+  }, (items) => {
+    if (typeof items.showDate !== 'undefined') cranmoOptions.showDate = items.showDate;
+    if (typeof items.showDownloadCounts !== 'undefined') cranmoOptions.showDownloadCounts = items.showDownloadCounts;
+    if (typeof items.hoverInterval !== 'undefined') cranmoOptions.hoverInterval = items.hoverInterval;
+    //cranmoOptions = Object.assign(cranmoOptions, items);
+  });
+}
+
 
 let popup = null;
 let popupLinkID = null;
-let popupLink = null;
 const requests = {};
-const titleCache = {};
+let numRequests = 0;
 
+const titleCache = {};
 
 function prettyCount(x) {
   let ds = '';
@@ -32,7 +67,6 @@ function getPackageName(url) {
   return (url.match(p)) ? RegExp.$2 : false;
 }
 
-
 function createPopup() {
   const p = $('<div>');
   p.attr('style',
@@ -50,7 +84,9 @@ function createPopup() {
 }
 
 function updateTitle() {
-  if (!popup) return;
+  if (!popup) {
+    return;
+  }
   const title = titleCache[popupLinkID];
   if (title) {
     popup.text(title);
@@ -66,35 +102,38 @@ function cranmoHoverOut() {
     popup.remove();
     popup = null;
     popupLinkID = null;
-    popupLink = null;
   }
 }
 
 function cranmoHoverIn() {
-  // check it's a CRAN link
+  // Check it's a CRAN link
   const id = getPackageName(this.href);
-  if (!id) return;
+  if (!id) {
+    return;
+  }
 
-  // create and add popup to document
-  if (!popup) popup = createPopup();
+  // Create and add popup to document
+  if (!popup) {
+    popup = createPopup();
+  }
 
   $(document.body).parent().append(popup);
-  // const rect = popup.getBoundingClientRect();
+  // Const rect = popup.getBoundingClientRect();
   // popup.style.cssText = `top: ${(rect.top + document.body.scrollTop) - 24}; left: ${rect.left + document.body.scrollLeft}`;
   const pos = $(this).offset();
   popup.css({
     top: pos.top - 24,
-    left: pos.left,
+    left: pos.left
   });
 
   popupLinkID = id;
-  popupLink = this;
 
-  // fetch if haven't already but don't make too many requests to CRAN
-  if (!titleCache[id]) {
-    // get the title from CRAN
+  // Fetch if haven't already but don't make too many requests to CRAN
+  if (!titleCache[id] && numRequests < cranmoOptions.maxRequests) {
+    console.log(cranmoOptions);
+    // Get the title from CRAN
     const url = `${cranmoOptions.urlForCRAN}${id}/index.html`;
-
+    numRequests += 1;
     fetch(url)
       .then((response) => {
         if (response.status !== 200) {
@@ -104,11 +143,11 @@ function cranmoHoverIn() {
 
         // Examine the text in the response
         response.text().then((txt) => {
-          // console.log(txt);
+          // Console.log(txt);
           const data = new DOMParser().parseFromString(txt, 'text/html');
           let title = data.querySelector('h2').innerText;
-          console.log(title);
-          // let pubdate = this.response.body.querySelector($('td:contains('Published')').next('td')[0].innerText;
+          // console.log(title);
+          // Let pubdate = this.response.body.querySelector($('td:contains('Published')').next('td')[0].innerText;
 
           const pubnode = Array.prototype.find.call(data.querySelectorAll('td'),
             element => (element.textContent === 'Published:' || element.textContent === 'Published'));
@@ -116,9 +155,13 @@ function cranmoHoverIn() {
           let pubdate = '';
           if (pubnode) {
             const nn = pubnode.nextElementSibling;
-            if (nn) pubdate = nn.innerText;
+            if (nn) {
+              pubdate = nn.innerText;
+            }
           }
-          if (cranmoOptions.showDate) title = `${title} [${pubdate}]`;
+          if (cranmoOptions.showDate) {
+            title = `${title} [${pubdate}]`;
+          }
 
           if (cranmoOptions.showDownloadCounts) {
             const downloadCountURL = `${cranmoOptions.urlForDownloadCounts}${id}`;
@@ -132,7 +175,7 @@ function cranmoHoverIn() {
 
                   // Examine the text in the response
                   downloadCountResponse.json().then((downloadCountData) => {
-                    console.log(downloadCountData);
+                    // console.log(downloadCountData);
                     const downloadCount = downloadCountData[0].downloads;
                     title = `${title} [${prettyCount(downloadCount)} DLs]`;
                     titleCache[id] = title;
@@ -147,7 +190,7 @@ function cranmoHoverIn() {
 
           titleCache[id] = title;
           updateTitle();
-          // delete requests[id];
+          numRequests -= 1;
         });
       })
       .catch((err) => {
@@ -155,9 +198,12 @@ function cranmoHoverIn() {
       });
   }
 
-  // update the title, whatever happened
+  // Update the title, whatever happened
   updateTitle();
-  console.log(titleCache);
+  // console.log(titleCache);
 }
+document.addEventListener('DOMContentLoaded', restoreCranmoOptions);
+document.addEventListener('load', restoreCranmoOptions);
 
-$('a').hoverIntent({ over: cranmoHoverIn, out: cranmoHoverOut, interval: 200 });
+$('a').hoverIntent({ over: cranmoHoverIn, out: cranmoHoverOut, interval: cranmoOptions.hoverInterval });
+
