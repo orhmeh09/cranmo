@@ -33,7 +33,8 @@
       ],
       "indent": [
           true,
-          "spaces"
+          "spaces",
+          2
       ],
       "no-eval": true,
       "no-internal-module": true,

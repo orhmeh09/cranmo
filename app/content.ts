@@ -1,8 +1,8 @@
-/// <reference path="lib/chrome.index.d.ts"/>
+// <aaareference path="lib/chrome.index.d.ts"/>
 
-import * as CRANMirrors from "./CRANMirrors.json";
+//import * as CRANMirrors from "./CRANMirrors.json";
 
-
+const CRANMirrors = require("./CRANMirrors.json")
 
 // import CRANMirrors from 'CRAN_mirrors';
 /* global CRANMirrors */
@@ -67,9 +67,9 @@ function prettyCount(x: number): string {
   return ds;
 }
 
-function getPackageName(url): string {
+function getPackageName(url: string): string {
   const p = /^(?:https?:\/\/)?(?:cran\.)(.+)\/(?:web\/packages\/)([\w.-]+)/;
-  return (url.match(p)) ? RegExp.$2 : null;
+  return (url.match(p)) ? RegExp.$2 : undefined;
 }
 
 function createPopup(): JQuery<HTMLElement> {
